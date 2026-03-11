@@ -16,9 +16,7 @@ p{font-size:1.1rem;margin-top:8px;color:rgba(255,255,255,.75)}
 .hidden{display:none!important}
 
 /* Panel top-left */
-#panel{position:absolute;top:18px;left:18px;display:none;pointer-events:none;z-index:5;
-  background:rgba(0,0,0,.75);border:2px solid #333;border-radius:8px;padding:10px 14px;min-width:170px}
-.pr{display:flex;align-items:center;gap:8px;margin-bottom:7px}.pr:last-child{margin-bottom:0}
+#panel{display:block;}.pr{display:flex;align-items:center;gap:8px;margin-bottom:7px}.pr:last-child{margin-bottom:0}
 .pl{font-size:10px;letter-spacing:2px;color:#555;text-transform:uppercase;width:62px}
 .pips{display:flex;gap:4px;align-items:center}
 .pip{width:11px;height:11px;transition:all .3s;clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%)}
@@ -37,8 +35,11 @@ p{font-size:1.1rem;margin-top:8px;color:rgba(255,255,255,.75)}
   text-shadow:2px 2px 0 #000;pointer-events:none;display:none;z-index:5;line-height:1.8}
 
 /* Minimap */
-#minimap{position:absolute;top:18px;right:18px;background:rgba(0,0,0,.7);
-  border:2px solid #444;border-radius:5px;z-index:5;display:none;pointer-events:none}
+/* #minimap{position:absolute;top:18px;right:18px;background:rgba(0,0,0,.7);
+  border:2px solid #444;border-radius:5px;z-index:5;display:none;pointer-events:none} */
+#minimap-container{position:absolute;top:18px;right:18px;z-index:5;display:none;pointer-events:none;font-family:'Courier New',monospace;color:#ccc;}
+#minimap{background:rgba(0,0,0,.7);border:2px solid #444;border-radius:5px;display:block;}
+#minimap-controls{background:rgba(0,0,0,.7);border:2px solid #333;border-radius:5px;margin-top:8px;padding:10px 14px;}
 
 /* Crosshair */
 #xhair{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
@@ -97,48 +98,90 @@ p{font-size:1.1rem;margin-top:8px;color:rgba(255,255,255,.75)}
 <div id="instructions">
   <h1>☠ CURSED HAUL ☠</h1>
   <h4>Compatible for PC only</h4>
-  <p style="max-width:520px;line-height:1.7;color:rgba(255,255,255,.80);font-size:1rem;margin-top:4px">
-    You wake up alone inside a pitch-black maze. Somewhere in the darkness,
-    <b style="color:#0ff">5 Diamonds</b> are scattered across the corridors — stolen relics
-    you must recover before the exit will open. But you are not alone.
-    Restless <b style="color:#f88">Ghosts</b> haunt every passage, and each diamond you grab
-    draws more of them toward you. Collect all 5 diamonds and the gate unlocks — but
-    beware: <b style="color:#ff4400">3 Behemoths</b> will spawn and hunt you relentlessly.
-    Each Behemoth takes <b style="color:#ff4400">4 bullets</b> to kill, and the ancient
-    <b style="color:#dd00ff">♦ AHAKA</b> guards the gate — it takes <b style="color:#dd00ff">10 bullets</b> to slay
-    and cloaks everything around it in darkness.
-    Scavenge <b style="color:#f80">bullet cases</b> to arm yourself,
-    hunt for the <b style="color:#ff0">⚡ Power Switch</b> to light the maze and reveal your path,
-    and escape before they consume you.
+  <h2>Game Instructions</h2>
+  <p style="max-width:800px;line-height:1.7;color:rgba(255,255,255,.80);font-size:1rem;margin-top:2px">
+    You wake up alone inside a pitch-black maze and you need to escape. But the exit gate is sealed.
+    You need five <b style="color:#0ff">5 Diamonds</b> to unlock the gate — and they are hidden somewhere in the maze.
+    </p>
+  <p style="max-width:800px;line-height:1.7;color:rgba(255,255,255,.80);font-size:1rem;margin-top:1px"><b>
+    First, turn on the <b style="color:#ff0">⚡ Power Switch</b> to see diamonds' locations. 
+    Fetch all five diamonds. 
+    Then escape before ghosts and monsters hunt you down.
+  </b>
   </p>
-
-  <div style="margin-top:28px"></div>
-
-  <p style="letter-spacing:2px;font-size:.75rem;color:#555;text-transform:uppercase;margin-bottom:10px">Controls</p>
-  <p style="line-height:2;font-size:.98rem">
-    <b style="color:#aaa">W A S D</b> — Move &nbsp;|&nbsp;
-    <b style="color:#aaa">SHIFT</b> — Sprint &nbsp;|&nbsp;
-    <b style="color:#aaa">T</b> — Toggle Torch
-  </p>
-  <p style="line-height:2;font-size:.98rem">
-    <b style="color:#f80">F or Mouse Left Click</b> — Shoot &nbsp;|&nbsp;
-    <b style="color:#ff0">E</b> — Interact / Use Switch
+  <p style="max-width:800px;line-height:1.7;color:rgba(255,255,255,.80);font-size:1rem;margin-top:1px">
+    You can shoot at enemies, but before that you must collect bullets cases. 
+    1 shot kills regular ghosts, Behemoths takes 4 shots and AHAKA takes 10 shots to be defeated.
   </p>
 
   <p style="color:#f55;margin-top:26px;letter-spacing:2px">Click to Begin</p>
 </div>
 
-<div id="panel">
-  <div class="pr"><span class="pl">Diamonds</span><div class="pips" id="dPips"></div><span class="bn cyan" id="dNum">5</span></div>
-  <div class="pr"><span class="pl">Bullets</span><div class="pips" id="bPips"></div><span class="bn orng" id="bNum">0</span></div>
+<div id="panel-wrapper" style="position:absolute;top:18px;left:18px;display:none;flex-direction:column;gap:8px;pointer-events:none;z-index:5;">
+  <div id="panel" style="background:rgba(0,0,0,.75);border:2px solid #333;border-radius:8px;padding:10px 14px;min-width:170px;">
+    <div class="pr"><span class="pl" style="color:#fff;font-weight:bold">Diamonds</span><div class="pips" id="dPips"></div><span class="bn cyan" id="dNum">0</span></div>
+    <div class="pr"><span class="pl" style="color:#fff;font-weight:bold">Bullets</span><div class="pips" id="bPips"></div><span class="bn orng" id="bNum">0</span></div>
+  </div>
+  <div id="objective-box" style="background:rgba(0,0,0,.75);border:2px solid #333;border-radius:8px;padding:10px 14px;min-width:170px;font-family:'Courier New',monospace;">
+    <p style="letter-spacing:2px;font-size:.75rem;color:#555;text-transform:uppercase;margin:0 0 6px 0">Objective</p>
+    <p id="objective-text" style="font-size:.82rem;color:#ffcc00;line-height:1.6;margin:0;text-shadow:0 0 6px #ffaa00"></p>
+  </div>
 </div>
+
+</div>
+
+<div id="objective-box" style="display:none;position:absolute;top:auto;left:18px;pointer-events:none;z-index:5;
+  background:rgba(0,0,0,.75);border:2px solid #333;border-radius:8px;padding:10px 14px;min-width:170px;font-family:'Courier New',monospace;">
+  <p style="letter-spacing:2px;font-size:.75rem;color:#555;text-transform:uppercase;margin:0 0 6px 0">Objective</p>
+  <p id="objective-text" style="font-size:.82rem;color:#ffcc00;line-height:1.6;margin:0;text-shadow:0 0 6px #ffaa00"></p>
+</div>
+
 <div id="hud">
-  <div id="torchHUD">TORCH: OFF - press T</div>
-  <div id="autoHUD">AUTOPILOT: OFF - press C</div>
+  <div id="torchHUD">TORCH: OFF</div>
+  <div id="autoHUD">AUTOPILOT: OFF</div>
   <div id="ghostHUD" style="color:#f88">GHOSTS: 1</div>
   <div id="powerHUD" style="color:#ff0">⚡ POWER: OFF</div>
 </div>
-<canvas id="minimap" width="210" height="210"></canvas>
+<!-- <canvas id="minimap" width="210" height="210"></canvas> -->
+<div id="minimap-container">
+  <canvas id="minimap" width="210" height="210"></canvas>
+  <div id="minimap-legend" style="background:rgba(0,0,0,.7);border:2px solid #333;border-radius:5px;margin-top:8px;padding:10px 14px;">
+  <div style="display:flex;flex-direction:column;gap:6px;font-size:.82rem;">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="display:inline-block;width:9px;height:9px;clip-path:polygon(50% 0%,100% 50%,50% 100%,0% 50%);background:#0ff;flex-shrink:0"></span>
+      <span style="color:#aaa;">Diamonds</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span id="legend-gate-dot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f00;box-shadow:0 0 4px #f00;flex-shrink:0"></span>
+      <span style="color:#aaa;">Exit Gate</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#eeff00;box-shadow:0 0 4px rgb(242, 255, 0);flex-shrink:0"></span>
+      <span style="color:#aaa;">Power Switch</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:rgb(255, 162, 0);box-shadow:0 0 4px rgb(255, 166, 0);flex-shrink:0""></span>
+      <span style="color:#aaa;">Bullets</span>
+    </div>
+  </div>
+</div>
+  <div id="minimap-controls">
+    <p style="letter-spacing:2px;font-size:.75rem;color:#555;text-transform:uppercase;margin:0 0 6px 0">Controls</p>
+    <p style="line-height:2;font-size:.85rem;margin:0">
+      <b style="color:#aaa">W A S D</b> — Move <br>
+      <b style="color:#aaa">SHIFT</b> — Sprint <br>
+      <b style="color:#88f">Mouse</b> — Look Around <br>
+      <b style="color:#aaa">T</b> — Toggle Torch
+    </p>
+    <p style="line-height:2;font-size:.85rem;margin:0">
+      <b style="color:#f80">F or Mouse Left Click</b> — Shoot <br>
+      <b style="color:#ff0">E</b> — Interact / Use Switch <br>
+      <b style="color:#f44">R</b> — Restart Game <br>
+      <b style="color:#8f8">C</b> — Auto collect diamonds <br>
+    </p>
+  </div>
+</div>
+
 <div id="xhair"></div>
 <div id="gameOver"><h1>YOU DIED</h1><p>Press <b style="color:#f88">R</b> to restart.</p></div>
 <div id="resetConfirm" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:100;align-items:center;justify-content:center;flex-direction:column;gap:22px">
@@ -770,6 +813,7 @@ let exitGrid={x:0,z:0},gateUnlocked=false,gateOpenAnim=0;
 let gateGroup=null,gateLight=null,gateBrightLight=null,gateWallMat=null;
 let openGateGroup=null;
 let lampLights=[],lampFlickerState=[],powerOn=false;
+let diamondSpawnPool=[];
 let powerAmbient=null;
 let switchMesh=null,switchGrid=null,nearSwitch=false,switchUsed=false;
 let moveForward=false,moveBackward=false,moveLeft=false,moveRight=false,isSprinting=false;
@@ -785,7 +829,7 @@ let autoPathStep=null,lastATK='',lastASK='';
 let audioCtx,masterGain,audioStarted=false;
 let sprintAudioBuffer=null,sprintSource=null,sprintGainNode=null,sprintPlaying=false;
 // UI
-const panelEl=document.getElementById('panel');
+const panelEl=document.getElementById('panel-wrapper');
 const dPipsEl=document.getElementById('dPips'),bPipsEl=document.getElementById('bPips');
 const dNumEl=document.getElementById('dNum'),bNumEl=document.getElementById('bNum');
 const flashEl=document.getElementById('flash'),promptEl=document.getElementById('prompt');
@@ -844,7 +888,7 @@ function init(){
   minimapCtx=minimapCanvas.getContext('2d');
   const instr=document.getElementById('instructions');
   instr.addEventListener('click',()=>{if(isGameOver||isGameWon)return;if(!audioStarted)initAudio();controls.lock();});
-  controls.addEventListener('lock',()=>{instr.classList.add('hidden');panelEl.style.display='block';document.getElementById('hud').style.display='block';document.getElementById('xhair').style.display='block';minimapCanvas.style.display='block';});
+  controls.addEventListener('lock',()=>{instr.classList.add('hidden');panelEl.style.display='block';document.getElementById('hud').style.display='block';document.getElementById('xhair').style.display='block';document.getElementById('minimap-container').style.display='block';});
   controls.addEventListener('unlock',()=>{if(!isGameOver&&!isGameWon)instr.classList.remove('hidden');});
   document.addEventListener('keydown',onKeyDown);
   document.addEventListener('keyup',onKeyUp);
@@ -1544,13 +1588,11 @@ function buildInteractables(){
   swGroup.rotation.y=swFace.rot;
   scene.add(swGroup);
 
-  // ── Diamonds ──────────────────────────────────────────────
+  // ── Diamonds — reserve spots, spawn later when power is turned on ──
+  diamondSpawnPool=[];
   for(let i=0;i<TOTAL_DIAMONDS;i++){
     const spot=emptySpots.pop();if(!spot)break;
-    const d=new THREE.Mesh(new THREE.OctahedronGeometry(1.5,0),new THREE.MeshStandardMaterial({color:0x00ffff,emissive:0x009ddd,emissiveIntensity:1.4,roughness:.1}));
-    d.position.set(spot.x*CELL_SIZE+CELL_SIZE/2,4,spot.z*CELL_SIZE+CELL_SIZE/2);
-    scene.add(d);
-    diamonds.push({mesh:d,active:true,grid:spot});
+    diamondSpawnPool.push(spot);
   }
 
   // ── Bullet cases ──────────────────────────────────────────
@@ -1579,9 +1621,9 @@ function buildPanelPips(){
 }
 function updatePanel(){
   const collected=TOTAL_DIAMONDS-diamondsLeft;
-  for(let i=0;i<TOTAL_DIAMONDS;i++){const p=document.getElementById('dp'+i);if(p)p.className='pip d'+(i<collected?' off':'');}
-  dNumEl.textContent=diamondsLeft;
-  dNumEl.className='bn cyan'+(diamondsLeft===0?' glow-g':'');
+  for(let i=0;i<TOTAL_DIAMONDS;i++){const p=document.getElementById('dp'+i);if(p)p.className='pip d'+(i<collected?'':' off');}
+  dNumEl.textContent=collected;
+  dNumEl.className='bn cyan'+(collected===TOTAL_DIAMONDS?' glow-g':'');
   const casesLeft=bulletCases.filter(c=>c.active).length;
   for(let i=0;i<TOTAL_CASES;i++){const p=document.getElementById('bp'+i);if(p)p.className='pip b'+(i>=Math.ceil(totalBullets/BULLETS_PER)?' off':'');}
   bNumEl.textContent=totalBullets;
@@ -1600,6 +1642,25 @@ function updateHUD(){
   document.getElementById('ghostHUD').innerHTML=enemyStr;
   document.getElementById('powerHUD').innerText=powerOn?'⚡ POWER: ON':'⚡ POWER: OFF';
   document.getElementById('powerHUD').style.color=powerOn?'#ff0':'#880';
+  // Objective box
+  const objBox=document.getElementById('objective-box');
+  const objText=document.getElementById('objective-text');
+  if(objBox&&objText){
+    objBox.style.display='block';
+    const panel=document.getElementById('panel-wrapper');
+    if(panel){objBox.style.top=(panel.offsetTop+panel.offsetHeight+10)+'px';}
+    if(!powerOn){
+      objText.textContent='Turn on the Power to reveal Diamonds.';
+    } else if(diamondsLeft>0){
+      objText.textContent='Collect all Diamonds to unlock the exit gate.';
+    } else {
+  objText.textContent='Go to the gate to escape!';
+  objText.style.color='#00ff88';
+  objText.style.textShadow='0 0 8px #00ff88';
+  const gateDot=document.getElementById('legend-gate-dot');
+  if(gateDot){gateDot.style.background='#0f0';gateDot.style.boxShadow='0 0 4px #0f0';}
+}
+  }
 }
 
 // ══════════════════════════════════════════════
@@ -1912,6 +1973,14 @@ function activatePower(){
   // Rotate switch lever up
   if(switchMesh) switchMesh.rotation.x=-Math.PI/4;
   lampFlickerState.forEach((s,i)=>{s.timer=i*.1+Math.random()*2;s.startupDone=false;s.intensity=0;s.flicker=Math.random()*1.8+.5;});
+  // Spawn diamonds now that power is on
+  for(const spot of diamondSpawnPool){
+    const d=new THREE.Mesh(new THREE.OctahedronGeometry(1.5,0),new THREE.MeshStandardMaterial({color:0x00ffff,emissive:0x009ddd,emissiveIntensity:1.4,roughness:.1}));
+    d.position.set(spot.x*CELL_SIZE+CELL_SIZE/2,4,spot.z*CELL_SIZE+CELL_SIZE/2);
+    scene.add(d);
+    diamonds.push({mesh:d,active:true,grid:spot});
+  }
+  diamondSpawnPool=[];
   minimapDirty=true;
   updateHUD();
 }
@@ -2165,11 +2234,9 @@ function drawMinimap(){
   minimapCtx.fillStyle='rgba(100,100,255,0.5)';
   for(let z=0;z<MAZE_SIZE;z++)for(let x=0;x<MAZE_SIZE;x++)
     if(maze[z][x]===1||maze[z][x]===2)minimapCtx.fillRect(x*MAP_SCALE,z*MAP_SCALE,MAP_SCALE,MAP_SCALE);
-  // Gate (hidden until power on)
-  if(powerOn){
-    minimapCtx.fillStyle=gateUnlocked?'#ffe600':'#cc0000';
-    minimapCtx.fillRect(exitGrid.x*MAP_SCALE,exitGrid.z*MAP_SCALE,MAP_SCALE,MAP_SCALE);
-  }
+  /// Gate (always visible)
+  minimapCtx.fillStyle=gateUnlocked?'#ffe600':'#cc0000';
+  minimapCtx.fillRect(exitGrid.x*MAP_SCALE,exitGrid.z*MAP_SCALE,MAP_SCALE,MAP_SCALE);
   // Switch
   minimapCtx.fillStyle='#ff0';
   if(switchGrid&&!switchUsed){
