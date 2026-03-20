@@ -27,7 +27,7 @@ But every diamond you grab draws the ghosts closer. And the moment you collect t
 
 **Collect. Survive. Escape.**
 
-[![Play Now](https://img.shields.io/badge/▶%20Play%20Now-Live%20Demo-ff4444?style=for-the-badge)](https://fahim715.github.io/cursed-haul-source-code/)
+[![Play Now](https://img.shields.io/badge/▶%20Play%20Now-Live%20Demo-ff4444?style=for-the-badge)](https://fahim715.github.io/cursed-haul-src/)
 ---
 
 ## Gameplay
@@ -199,7 +199,7 @@ npx serve .
 
 **VS Code** — Right-click `index.html` and select **Open with Live Server**.
 
-Or just [play it in the browser](https://fahim715.github.io/cursed-haul-source-code/) — no setup needed.
+Or just [play it in the browser](https://fahim715.github.io/cursed-haul-src/) — no setup needed.
 
 ---
 
@@ -224,6 +224,6 @@ Licensed under the **MIT License** — see [LICENSE.md](LICENSE.md) for details.
 
 Built with vanilla JavaScript and Three.js.
 
-[**Play Now**](https://fahim715.github.io/cursed-haul-source-code/)
+[**Play Now**](https://fahim715.github.io/cursed-haul-src/)
 
 </div>
